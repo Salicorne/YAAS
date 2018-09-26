@@ -19,5 +19,8 @@ from Auth.views import *
 
 urlpatterns = [
     path('admin', admin.site.urls),
+    path('', RegisterView.as_view(), name="main"), 
     path('register', RegisterView.as_view(), name="register"), 
+    path('login', LoginView.as_view(), name="login"), 
+    path('logout', logout_view, name="logout"), 
 ]

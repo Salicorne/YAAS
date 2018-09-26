@@ -119,6 +119,8 @@ USE_TZ = True
 # Tell crispy_forms to use bootstrap4 template
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+LOGIN_URL = 'login'
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
