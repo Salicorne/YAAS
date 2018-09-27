@@ -6,7 +6,7 @@
 
         <h1>Login</h1>
 
-        <form action="{% url 'login' %}" method="POST">
+        <form action="{% url 'login' %}?next={{ next }}" method="POST">
             {% csrf_token %}
             {{ form|crispy }}
             <button type="submit" class="btn btn-primary">Login</button>

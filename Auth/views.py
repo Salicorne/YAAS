@@ -31,7 +31,7 @@ class LoginView(View):
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('main'))
         form = forms.LoginForm()
-        return render(request, 'login.html', {'form': form})
+        return render(request, 'login.html', {'form': form, 'next': request.GET.get("next", reverse("main"))})
 
     def post(self, request):
         form = forms.LoginForm(request.POST)
@@ -40,7 +40,8 @@ class LoginView(View):
             if user is not None:
                 login(request, user)
                 # Success !
-                return HttpResponseRedirect(reverse('main'))
+                # return HttpResponseRedirect(reverse('main'))
+                return HttpResponseRedirect(self.request.GET.get("next", reverse("main")))
             else:
                 return HttpResponse("No such user...")
         return HttpResponse('Error')
