@@ -16,12 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from Auth.views import *
+from Auction.views import *
 
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('', RegisterView.as_view(), name="main"), 
+    path('', auctionsBrowse, name="main"), 
     path('register', RegisterView.as_view(), name="register"), 
     path('login', LoginView.as_view(), name="login"), 
     path('logout', logout_view, name="logout"), 
     path('userEdit', UserEditView.as_view(), name="userEdit"), 
+    path('auctionCreate', AuctionCreateView.as_view(), name="auctionCreate"), 
+    path('api/auctions', api_auctionsBrowse, name="api_auctionsBrowse")
 ]

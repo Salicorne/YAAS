@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+        <h1>Active auctions</h1>
+
+        {% for a in auctions %}
+            {{ a.title }}<br />
+        {% endfor %}
+{% endblock %}
