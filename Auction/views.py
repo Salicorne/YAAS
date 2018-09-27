@@ -29,15 +29,17 @@ class AuctionCreateView(LoginRequiredMixin, View):
             return HttpResponse("error")
 
 def get_auctionsBrowse():
+    def build_dict(x):
+        i = x.get("fields")
+        i["id"] = x.get("pk")
+        return i
     try:
         a = models.Auction.objects.all()
         orm_json = serializers.serialize("json", a)
-        res = list(map(lambda x: x.get("fields"), list(json.loads(orm_json))))
+        return json.dumps(list(map(build_dict, list(json.loads(orm_json)))))
         
     except Exception:
         return "[]"
-    
-    return json.dumps(res)
 
 def api_auctionsBrowse(request):
     return HttpResponse(get_auctionsBrowse())

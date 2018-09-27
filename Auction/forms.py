@@ -14,5 +14,5 @@ class AuctionCreateForm(forms.ModelForm):
             # More info on this MDN article : https://developer.mozilla.org/fr/docs/Web/HTML/Element/Input/datetime-local
         }
         help_texts = {
-            "deadline": "Input format : yyyy-MM-ddThh:mm"
+            "deadline": "Input format : yyyy-MM-dd hh:mm"
         }
