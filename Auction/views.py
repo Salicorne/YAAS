@@ -24,7 +24,7 @@ class AuctionCreateView(LoginRequiredMixin, View):
                         deadline=form.cleaned_data.get("deadline"), 
                         seller=request.user)
             a.save()
-            return redirect("main")
+            return redirect("auctionsBrowse")
         else:
             return HttpResponse("error")
 

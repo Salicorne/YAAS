@@ -20,11 +20,12 @@ from Auction.views import *
 
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('', auctionsBrowse, name="main"), 
+    path('', index, name="main"), 
     path('register', RegisterView.as_view(), name="register"), 
     path('login', LoginView.as_view(), name="login"), 
     path('logout', logout_view, name="logout"), 
-    path('userEdit', UserEditView.as_view(), name="userEdit"), 
-    path('auctionCreate', AuctionCreateView.as_view(), name="auctionCreate"), 
-    path('api/auctions', api_auctionsBrowse, name="api_auctionsBrowse")
+    path('edit-user', UserEditView.as_view(), name="userEdit"), 
+    path('auctions/create', AuctionCreateView.as_view(), name="auctionCreate"), 
+    path('api/auctions', api_auctionsBrowse, name="api_auctionsBrowse"), 
+    path('auctions', auctionsBrowse, name="auctionsBrowse"), 
 ]

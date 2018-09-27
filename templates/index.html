@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block body %}
+        <header>
+            <h1>YAAS Project</h1>
+            <p>This website is a graded project for the course "DT00BT67 : Development of server-side web services" at &Aring;bo Akademi University. 
+                It is an example of the YAAS application : <em>Yet Another Auction Website</em>. </p>
+        </header>
+        <p>The sources of this project <a href="https://github.com/Salicorne/YAAS" target="_blank">can be found here</a>. 
+            The principle of the YAAS application is to create and participate in auctions. This application relies on the Python web framework Django, 
+            and handles user accounts creation, authentification, authorization and edition, auction creation and bidding. </p>
+        <br />
+
+        <div class="row">
+            <div class="col-lg-6 index-col">
+                <a href="{% url 'auctionsBrowse' %}" class="btn btn-primary">Browse active auctions</a>
+            </div>
+            <div class="col-lg-6 index-col">
+                <a href="{% url 'auctionCreate' %}" class="btn btn-primary">New auction</a>
+            </div>
+        </div>
+{% endblock %}

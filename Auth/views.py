@@ -69,3 +69,6 @@ class UserEditView(LoginRequiredMixin, View):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('main'))
+
+def index(request):
+    return render(request, "index.html")

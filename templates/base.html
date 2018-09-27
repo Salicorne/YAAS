@@ -20,7 +20,7 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'main' %}">Auctions</a>
+                    <a class="nav-link" href="{% url 'auctionsBrowse' %}">Auctions</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
@@ -45,11 +45,6 @@
     </nav>
 
     <main role="main" class="container">
-
-        <!--<div class="starter-template">
-            <h1>Bootstrap starter template</h1>
-            <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-        </div>-->
 
         {% block body %}{% endblock %}
     </main><!-- /.container -->
