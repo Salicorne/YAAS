@@ -27,10 +27,13 @@
                 </li>
             </ul>
             <ul class="navbar-nav">
-                <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'auctionSearch' %}">
-                    <input name="q" class="form-control form-control-sm mr-sm-2" type="search" placeholder="Search auctions" aria-label="Search" value="{% if search %}{{ search }}{% endif %}" >
-                    <button class="btn btn-success btn-sm my-2 my-sm-0" type="submit">Search</button>
+                <form class="navbar-form form-inline navbar-left navbar-input-group" role="search" method="GET" action="{% url 'auctionSearch' %}">
+                    <div class="form-group">
+                        <input type="search" class="form-control form-control-sm" name="q" placeholder="Search auctions" value="{% if search %}{{ search }}{% endif %}" >
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-success">Search</button>
                 </form>
+
                 <li class="nav-item sep"></li>
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
