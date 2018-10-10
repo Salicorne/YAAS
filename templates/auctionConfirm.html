@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block body %}
+
+        <h1>New auction : {{ title }}</h1>
+
+        <form action="{% url 'auctionConfirm' %}" method="POST">
+            <p>Are you sure you want to create this auction ? If you cancel now, the auction will not be stored in the system. </p>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <a href="{% url 'auctionsBrowse' %}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Create !</button>
+        </form><br />
+{% endblock %}

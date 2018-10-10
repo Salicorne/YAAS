@@ -16,3 +16,14 @@ class AuctionCreateForm(forms.ModelForm):
         help_texts = {
             "deadline": "Input format : yyyy-MM-dd hh:mm"
         }
+
+class ConfAuctionForm(forms.ModelForm):
+    class Meta:
+        model = Auction
+        fields = ["title", "description", "price", "deadline"]
+        widgets = {
+            "title": forms.HiddenInput(), 
+            "description": forms.HiddenInput(), 
+            "price": forms.HiddenInput(), 
+            "deadline": forms.HiddenInput(), 
+        }

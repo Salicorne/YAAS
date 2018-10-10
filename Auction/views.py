@@ -21,15 +21,27 @@ class AuctionCreateView(View):
     def post(self, request):
         form = forms.AuctionCreateForm(request.POST)
         if form.is_valid():
-            a = models.Auction(title=form.cleaned_data.get("title"), 
+            confForm = forms.ConfAuctionForm(initial={"title": form.cleaned_data.get("title"), 
+                                                    "description": form.cleaned_data.get("description"), 
+                                                    "price": form.cleaned_data.get("price"), 
+                                                    "deadline": form.cleaned_data.get("deadline")})
+            return render(request, "auctionConfirm.html", {"form": confForm, "title": form.cleaned_data.get("title")})
+        else:
+            return HttpResponse("error")
+
+@login_required
+def auctionConfirm(request):
+    form = forms.ConfAuctionForm(request.POST)
+    if(form.is_valid()):
+        a = models.Auction(title=form.cleaned_data.get("title"), 
                         description=form.cleaned_data.get("description"), 
                         price=form.cleaned_data.get("price"), 
                         deadline=form.cleaned_data.get("deadline"), 
                         seller=request.user)
-            a.save()
-            return redirect("auctionsBrowse")
-        else:
-            return HttpResponse("error")
+        a.save()
+        return redirect("auctionsBrowse")
+    else:
+        return HttpResponse("error")
 
 def auctionsBrowse(request):
     auctions = Auction.objects.all()

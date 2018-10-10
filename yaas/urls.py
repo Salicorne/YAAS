@@ -29,6 +29,7 @@ urlpatterns = [
     path('edit-user', UserEditView.as_view(), name="userEdit"),
     
     path('auctions/create', AuctionCreateView.as_view(), name="auctionCreate"),
+    path('auctions/confirm', auctionConfirm, name="auctionConfirm"),
     
     path('api/auctions', api_auctionsBrowse, name="api_auctionsBrowse"),
     path('auctions', auctionsBrowse, name="auctionsBrowse"),
