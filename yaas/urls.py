@@ -17,15 +17,16 @@ from django.contrib import admin
 from django.urls import path
 from Auth.views import *
 from Auction.views import *
+from Auction.restframework_rest_api import *
 
 urlpatterns = [
     path('admin', admin.site.urls),
-    path('', index, name="main"), 
-    path('register', RegisterView.as_view(), name="register"), 
-    path('login', LoginView.as_view(), name="login"), 
-    path('logout', logout_view, name="logout"), 
-    path('edit-user', UserEditView.as_view(), name="userEdit"), 
-    path('auctions/create', AuctionCreateView.as_view(), name="auctionCreate"), 
-    path('api/auctions', api_auctionsBrowse, name="api_auctionsBrowse"), 
-    path('auctions', auctionsBrowse, name="auctionsBrowse"), 
+    path('', index, name="main"),
+    path('register', RegisterView.as_view(), name="register"),
+    path('login', LoginView.as_view(), name="login"),
+    path('logout', logout_view, name="logout"),
+    path('edit-user', UserEditView.as_view(), name="userEdit"),
+    path('auctions/create', AuctionCreateView.as_view(), name="auctionCreate"),
+    path('api/auctions', api_auctionsBrowse, name="api_auctionsBrowse"),
+    path('auctions', auctionsBrowse, name="auctionsBrowse"),
 ]

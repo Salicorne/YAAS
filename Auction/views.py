@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from . import forms, models
+from .restframework_rest_api import *
 
 # Create your views here.
 
@@ -31,25 +32,9 @@ class AuctionCreateView(View):
         else:
             return HttpResponse("error")
 
-def get_auctionsBrowse():
-    def build_dict(x):
-        i = x.get("fields")
-        i["id"] = x.get("pk")
-        return i
-    try:
-        a = models.Auction.objects.all()
-        orm_json = serializers.serialize("json", a)
-        return json.dumps(list(map(build_dict, list(json.loads(orm_json)))))
-        
-    except Exception:
-        return "[]"
-
-def api_auctionsBrowse(request):
-    return HttpResponse(get_auctionsBrowse())
-
 def auctionsBrowse(request):
     try:
-        a = json.loads(get_auctionsBrowse())
+        auctions = json.loads(get_auctionsBrowse())
     except json.JSONDecodeError:
         return HttpResponse("error")
-    return render(request, "browseAuctions.html", {"auctions": a})
+    return render(request, "browseAuctions.html", {"auctions": auctions})
