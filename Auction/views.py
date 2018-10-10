@@ -30,6 +30,32 @@ class AuctionCreateView(View):
         else:
             return HttpResponse("error")
 
+class AuctionEditView(View):
+    @method_decorator(login_required)
+    def get(self, request, id):
+        auction = get_auctionView(id)
+        if auction.seller != request.user:
+            messages.error(request, "You can only edit your own auctions !")
+            return redirect("auctionsBrowse")
+        form = forms.AuctionEditForm(instance=auction)
+        return render(request, 'auctionEdit.html', {'form': form, 'title': auction.title, 'id': auction.id})
+
+    @method_decorator(login_required)
+    def post(self, request, id):
+        form = forms.AuctionEditForm(request.POST)
+        if form.is_valid():
+            auction = get_auctionView(id)
+            if auction.seller != request.user:
+                messages.error(request, "You can only edit your own auctions !")
+                return redirect("auctionsBrowse")
+            auction.description = form.cleaned_data.get("description")
+            auction.save()
+            messages.success(request, "Your auction has been updated !")
+            return redirect("auctionsBrowse")
+        else:
+            messages.error(request, "Error during auction editing !")
+            return render(request, 'auctionEdit.html', {'form': form, 'title': auction.title, 'id': auction.id})
+
 @login_required
 def auctionConfirm(request):
     form = forms.ConfAuctionForm(request.POST)

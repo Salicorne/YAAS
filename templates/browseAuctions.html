@@ -18,6 +18,9 @@
                         <a href="{% url 'auctionView' id=a.id %}"><h5 class="card-title">{{ a.title }}</h5></a>
                         <p class="card-text">{{ a.description }}</p>
                         {#<a class="card-link" href="#">{{ a.id }}</a>-->#}
+                        {% if a.seller == user %}
+                        <a href="{% url 'auctionEdit' a.id %}" class="btn btn-warning">Edit this auction</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

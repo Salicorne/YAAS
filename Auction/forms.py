@@ -27,3 +27,16 @@ class ConfAuctionForm(forms.ModelForm):
             "price": forms.HiddenInput(), 
             "deadline": forms.HiddenInput(), 
         }
+
+class AuctionEditForm(forms.ModelForm):
+    class Meta:
+        model = Auction
+        fields = ["title", "description", "price", "deadline"]
+        widgets = {
+            "title": forms.DateTimeInput(attrs={'readonly': 'readonly'}),
+            "price": forms.DateTimeInput(attrs={'readonly': 'readonly'}),
+            "deadline": forms.DateTimeInput(attrs={'readonly': 'readonly'})
+        }
+        help_texts = {
+            "deadline": "Input format : yyyy-MM-dd hh:mm"
+        }
