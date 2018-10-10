@@ -1,20 +1,23 @@
 import json
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
+from django.utils.decorators import method_decorator
 from django.views import View
-from django.core import serializers
 
 from . import forms, models
 
 # Create your views here.
 
-class AuctionCreateView(LoginRequiredMixin, View):
+class AuctionCreateView(View):
+    @method_decorator(login_required)
     def get(self, request):
         form = forms.AuctionCreateForm()
         return render(request, 'auctionCreate.html', {'form': form})
 
+    @method_decorator(login_required)
     def post(self, request):
         form = forms.AuctionCreateForm(request.POST)
         if form.is_valid():

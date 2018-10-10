@@ -1,6 +1,7 @@
 from django.contrib.auth import (authenticate, login, logout,
                                  update_session_auth_hash)
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
@@ -46,11 +47,13 @@ class LoginView(View):
                 return HttpResponse("No such user...")
         return HttpResponse('Error')
 
-class UserEditView(LoginRequiredMixin, View):
+class UserEditView(View):
+    @method_decorator(login_required)
     def get(self, request):
         form = forms.UserEditForm(instance=request.user)
         return render(request, 'userEdit.html', {'form': form, 'username': request.user.username})
 
+    @method_decorator(login_required)
     def post(self, request):
         form = forms.UserEditForm(request.POST)
         if form.is_valid():
