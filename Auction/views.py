@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect
@@ -39,6 +40,7 @@ def auctionConfirm(request):
                         deadline=form.cleaned_data.get("deadline"), 
                         seller=request.user)
         a.save()
+        messages.success(request, "Your auction has been created !")
         return redirect("auctionsBrowse")
     else:
         return HttpResponse("error")

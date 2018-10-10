@@ -1,11 +1,12 @@
+from django.contrib import messages
 from django.contrib.auth import (authenticate, login, logout,
                                  update_session_auth_hash)
-from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
 
 from . import forms
@@ -24,8 +25,10 @@ class RegisterView(View):
             user.first_name = form.cleaned_data.get("first_name")
             user.last_name = form.cleaned_data.get("last_name")
             user.save()
-            return HttpResponse("ok")
-        return HttpResponse("POST")
+            messages.success(request, "Your account has been created ! Please login. ")
+            return redirect("main")
+        messages.error(request, "Error during registration")
+        return render(request, 'register.html', {'form': form})
 
 class LoginView(View):
     def get(self, request):
@@ -44,7 +47,8 @@ class LoginView(View):
                 # return HttpResponseRedirect(reverse('main'))
                 return HttpResponseRedirect(self.request.GET.get("next", reverse("main")))
             else:
-                return HttpResponse("No such user...")
+                messages.error(request, "Error : invalid credentials. ")
+                return render(request, 'login.html', {'form': form, 'next': request.GET.get("next", reverse("main"))})
         return HttpResponse('Error')
 
 class UserEditView(View):
@@ -66,8 +70,9 @@ class UserEditView(View):
                 user.set_password(password)
                 update_session_auth_hash(request, user) # Used to not disconnect the user
             user.save()
+            messages.success(request, "Your user profile has been successfully updated !")
             return HttpResponseRedirect(reverse('main'))
-        return HttpResponse("POST")
+        return render(request, 'userEdit.html', {'form': form, 'username': request.user.username})
 
 def logout_view(request):
     logout(request)
