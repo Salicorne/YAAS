@@ -2,7 +2,12 @@
 
 {% block body %}
 
-        <h1>Active auctions</h1>
+        <h1>
+            Active auctions
+            {% if search %} (search : {{ search }}) {% endif %}
+        </h1>
+
+        {% if search %} <a href="{% url 'auctionsBrowse' %}" class="btn btn-info">View all auctions</a><br /><br /> {% endif %}
 
         <div class="row">
         {% for a in auctions %}
@@ -19,6 +24,12 @@
 
             {% if forloop.counter|divisibleby:3 %}
         </div><br /><div class="row">
+            {% endif %}
+        {% empty %}
+            {% if search %}
+            <em>Sorry, no auction matches the search '{{ search }}'... </em>
+            {% else %}
+            <em>Sorry, there are no auctions yet ! Do you want to <a href="{% url 'auctionCreate' %}">add one</a> ?</em>
             {% endif %}
         {% endfor %}
         </div>

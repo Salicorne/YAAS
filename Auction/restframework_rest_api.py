@@ -23,3 +23,11 @@ def api_auctionView(request, id):
     auction = get_object_or_404(Auction, id=id)
     serializer = AuctionSerializer(auction)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@renderer_classes([JSONRenderer,])
+def api_auctionsSearch(request):
+    search = request.GET.get('q', '')
+    auctions = Auction.objects.filter(title__icontains=search)
+    serializer = AuctionSerializer(auctions, many=True)
+    return Response(serializer.data)

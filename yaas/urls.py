@@ -35,6 +35,8 @@ urlpatterns = [
     path('auctions', auctionsBrowse, name="auctionsBrowse"),
     path('api/auctions/<int:id>', api_auctionView, name="api_auctionView"),
     path('auctions/<int:id>', auctionView, name="auctionView"),
+    path('api/auctions/search', api_auctionsSearch, name="api_auctionSearch"),
+    path('auctions/search', auctionsSearch, name="auctionSearch"),
 
 
 ]

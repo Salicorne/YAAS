@@ -27,6 +27,11 @@
                 </li>
             </ul>
             <ul class="navbar-nav">
+                <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'auctionSearch' %}">
+                    <input name="q" class="form-control form-control-sm mr-sm-2" type="search" placeholder="Search auctions" aria-label="Search" value="{% if search %}{{ search }}{% endif %}" >
+                    <button class="btn btn-success btn-sm my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                <li class="nav-item sep"></li>
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="userdropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ user.get_username }}</a>

@@ -50,3 +50,9 @@ def auctionsBrowse(request):
 def auctionView(request, id):
     auction = get_object_or_404(Auction, id=id)
     return render(request, "seeAuction.html", {"auction": auction})
+
+def auctionsSearch(request):
+    search = request.GET.get('q', '')
+    auctions = Auction.objects.filter(title__icontains=search)
+    serializer = AuctionSerializer(auctions, many=True)
+    return render(request, "browseAuctions.html", { "auctions": auctions, "search": search })

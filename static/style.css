@@ -14,3 +14,7 @@ h1 {
 .index-col {
   text-align: center;
 }
+
+.sep {
+  width: 20px;
+}
