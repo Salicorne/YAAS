@@ -10,7 +10,7 @@
             <div class="col-lg-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">{{ a.title }}</h5>
+                        <a href="{% url 'auctionView' id=a.id %}"><h5 class="card-title">{{ a.title }}</h5></a>
                         <p class="card-text">{{ a.description }}</p>
                         {#<a class="card-link" href="#">{{ a.id }}</a>-->#}
                     </div>

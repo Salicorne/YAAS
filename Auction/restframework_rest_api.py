@@ -10,13 +10,16 @@ from django.shortcuts import get_object_or_404
 from .serializers import AuctionSerializer
 from .models import Auction
 
-
-def get_auctionsBrowse():
-    auctions = Auction.objects.all()
-    serializer = AuctionSerializer(auctions, many=True)
-    return serializer.data
-
 @api_view(['GET'])
 @renderer_classes([JSONRenderer,])
 def api_auctionsBrowse(request):
-    return Response(get_auctionsBrowse())
+    auctions = Auction.objects.all()
+    serializer = AuctionSerializer(auctions, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@renderer_classes([JSONRenderer,])
+def api_auctionView(request, id):
+    auction = get_object_or_404(Auction, id=id)
+    serializer = AuctionSerializer(auction)
+    return Response(serializer.data)

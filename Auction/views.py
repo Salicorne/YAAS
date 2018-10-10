@@ -10,7 +10,6 @@ from django.views import View
 from . import forms, models
 from .restframework_rest_api import *
 
-# Create your views here.
 
 class AuctionCreateView(View):
     @method_decorator(login_required)
@@ -33,8 +32,9 @@ class AuctionCreateView(View):
             return HttpResponse("error")
 
 def auctionsBrowse(request):
-    try:
-        auctions = json.loads(get_auctionsBrowse())
-    except json.JSONDecodeError:
-        return HttpResponse("error")
+    auctions = Auction.objects.all()
     return render(request, "browseAuctions.html", {"auctions": auctions})
+
+def auctionView(request, id):
+    auction = get_object_or_404(Auction, id=id)
+    return render(request, "seeAuction.html", {"auction": auction})
