@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
+import time
 
 # Create your models here.
 
@@ -11,3 +13,7 @@ class Auction(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     deadline = models.DateTimeField()
     bid_version = models.IntegerField(default=0)
+
+    def getTimeLeft(self):
+        diff = self.deadline.replace(tzinfo=None) - datetime.datetime.now().replace(tzinfo=None)
+        return str(diff)

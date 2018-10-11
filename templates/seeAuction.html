@@ -12,6 +12,7 @@
             </div>
         </div>
         <p>Current price : {{ auction.price }}</p>
+        <p>Time left : {{ auction.getTimeLeft }}</p>
 
         {% if user.is_authenticated %}
         {% if form.errors %}
