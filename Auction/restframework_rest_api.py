@@ -4,11 +4,33 @@ from rest_framework.authentication import BasicAuthentication, TokenAuthenticati
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
+from rest_framework.exceptions import APIException
 
 from django.shortcuts import get_object_or_404
 
-from .serializers import AuctionSerializer
+from .serializers import AuctionSerializer, BidSerializer
 from .models import Auction
+
+
+class OwnAuctionException(APIException):
+    status_code = 403
+    default_detail = "An user can not bid on his own auctions"
+    default_code = "Forbidden"
+
+class PriceException(APIException):
+    status_code = 403
+    default_detail = "The bidding price must be higher than the current price"
+    default_code = "Forbidden"
+
+class AuctionWinnerException(APIException):
+    status_code = 403
+    default_detail = "You are already the winner of this auction"
+    default_code = "Forbidden"
+
+class UpdatedAuctionException(Exception):
+    def __init__(self):
+        self.message = "This auction has been updated before your request !"
+
 
 
 def get_auctionsBrowse():
@@ -43,3 +65,37 @@ def api_auctionsSearch(request):
     auctions = get_auctionsSearch(search)
     serializer = AuctionSerializer(auctions, many=True)
     return Response(serializer.data)
+
+
+def exec_bid(id, version, price, bidder):
+    auction = get_object_or_404(Auction, id=id)
+    if auction.seller == bidder:
+        raise OwnAuctionException()
+    if auction.last_bidder == bidder:
+        raise AuctionWinnerException()
+    if auction.bid_version != version:
+        raise UpdatedAuctionException()
+    if(auction.price > price):
+        raise PriceException()
+    auction.price = price
+    auction.bid_version = auction.bid_version + 1
+    auction.last_bidder = bidder
+    auction.save()
+    return auction
+
+@api_view(['POST'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
+@renderer_classes([JSONRenderer,])
+def api_bid(request, id):
+    in_serializer = BidSerializer(data=request.data)
+    if in_serializer.is_valid():
+        try:
+            auction = exec_bid(id, in_serializer.validated_data.get("version", 0), in_serializer.validated_data.get("price", 0), request.user)
+        except UpdatedAuctionException as e:
+            return Response({'detail': e.message})
+
+        out_serializer = AuctionSerializer(auction, many=False)
+        return Response(out_serializer.data)
+
+
