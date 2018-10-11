@@ -43,5 +43,5 @@ class AuctionEditForm(forms.ModelForm):
 
 class BidForm(forms.Form):
     price = forms.FloatField(label="Your bid", min_value=0, widget=forms.NumberInput(attrs={'step': 0.01}))
-    version = forms.IntegerField(min_value=0, widget=forms.NumberInput, label="")
+    version = forms.IntegerField(min_value=0, widget=forms.HiddenInput(), label="")
 
