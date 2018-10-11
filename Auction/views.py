@@ -7,6 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
+from decimal import Decimal
 
 from . import forms, models
 from .restframework_rest_api import *
@@ -77,10 +78,37 @@ def auctionsBrowse(request):
 
 def auctionView(request, id):
     auction = get_auctionView(id)
-    return render(request, "seeAuction.html", {"auction": auction})
+    form = forms.BidForm(data={'price': auction.price+Decimal(0.01), 'version': auction.bid_version})
+    return render(request, "seeAuction.html", {"auction": auction, 'form': form})
 
 def auctionsSearch(request):
     search = request.GET.get('q', '')
     auctions = get_auctionsSearch(search)
     serializer = AuctionSerializer(auctions, many=True)
     return render(request, "browseAuctions.html", { "auctions": auctions, "search": search })
+
+@login_required
+def bid(request, id):
+    auction = get_auctionView(id)
+    form = forms.BidForm(request.POST)
+    if form.is_valid():
+        try:
+            exec_bid(id, form.cleaned_data.get("version", 0), form.cleaned_data.get("price", 0), request.user)
+            return redirect("auctionView", id) 
+        except UpdatedAuctionException as e:
+            messages.error(request, e.message)
+            return render(request, "seeAuction.html", {"auction": auction, 'form': form})
+        except PriceException as e:
+            messages.error(request, e.detail)
+            return render(request, "seeAuction.html", {"auction": auction, 'form': form})
+        except OwnAuctionException as e:
+            messages.error(request, e.detail)
+            return render(request, "seeAuction.html", {"auction": auction, 'form': form})
+        except AuctionWinnerException as e:
+            messages.error(request, e.detail)
+            return render(request, "seeAuction.html", {"auction": auction, 'form': form})
+            
+    else:
+        messages.error(request, "Error during form validation. ")
+        return render(request, "seeAuction.html", {"auction": auction, 'form': form})
+        

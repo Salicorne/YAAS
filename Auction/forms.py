@@ -40,3 +40,8 @@ class AuctionEditForm(forms.ModelForm):
         help_texts = {
             "deadline": "Input format : yyyy-MM-dd hh:mm"
         }
+
+class BidForm(forms.Form):
+    price = forms.FloatField(label="Your bid", min_value=0, widget=forms.NumberInput(attrs={'step': 0.01}))
+    version = forms.IntegerField(min_value=0, widget=forms.NumberInput, label="")
+
