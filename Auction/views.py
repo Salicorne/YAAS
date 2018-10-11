@@ -94,7 +94,7 @@ def bid(request, id):
     if form.is_valid():
         try:
             exec_bid(id, form.cleaned_data.get("version", 0), form.cleaned_data.get("price", 0), request.user)
-            return redirect("auctionView", id) 
+            return redirect("auctionView", id)
         except UpdatedAuctionException as e:
             messages.error(request, e.message)
             return render(request, "seeAuction.html", {"auction": auction, 'form': form})

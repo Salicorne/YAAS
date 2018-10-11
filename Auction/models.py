@@ -7,6 +7,7 @@ import time
 
 class Auction(models.Model):
     seller = models.ForeignKey(User, on_delete=models.CASCADE)
+    bidders = models.ManyToManyField(User, related_name="auctions")
     last_bidder = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name="bids")
     title = models.CharField(max_length=100)
     description = models.TextField()

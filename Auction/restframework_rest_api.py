@@ -80,6 +80,7 @@ def exec_bid(id, version, price, bidder):
     auction.price = price
     auction.bid_version = auction.bid_version + 1
     auction.last_bidder = bidder
+    auction.bidders.add(bidder)
     auction.save()
     return auction
 
