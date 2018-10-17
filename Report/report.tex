@@ -14,13 +14,47 @@
 
     \section{Implemented requirements}
 
+    The following list of requirements has been implemented : 
+    \begin{itemize}
+        \item UC1: create user
+        \item UC2: edit user
+        \item UC3: create auction
+        \item UC4: edit auction description
+        \item UC6: bid
+        \item UC5: Browse \& Search
+        %\item UC7: ban auction
+        %\item UC8: resolve auction
+        %\item UC9: language switching
+        \item UC10: concurrency
+        %\item UC11: currency exchange
+        \item WS1: Browse \& Search API
+        \item WS2: Bid api
+        %\item OP2: soft deadlines for bidding
+        %\item OP3: store language preference
+        %\item OP1: send seller auction link
+        %\item TR1: data generation program
+        %\item TR2
+
+    \end{itemize}
+
     \section{Packages used}
+    This YAAS application relies on the following packages :
+    \begin{itemize}
+        \item Django (2.1.1)
+        \item django-crispy-forms (1.7.2)
+        \item django-filter (2.0.0) 
+        \item djangorestframework (3.8.2)
+        \item Markdown (3.0.1)
+        
+    \end{itemize}
 
 \chapter{Development strategies}
 
     \section{Session management}
 
     \section{Confirmation form (UC3)}
+
+    UC3 states that the user should be asked for a confirmation before creating a new auction. I implemented it using the rendering of a confirmation form, containing all auction informations in hidden field. The first auction creation form is validated server-side : if all informations are correct, the confirmation form is shown with these informations. Only when this confirmation form is submited the new auction is created and saved in database : thus if the user cancels the process or never submits the form the auction is not saved. This behaviour is described in the file \texttt{Auction/views.py}, in the functions \texttt{AuctionEditView::get}, \texttt{AuctionEditView::post} and \texttt{auctionConfirm}. 
 
     \section{Automatic bid resolution}
         
