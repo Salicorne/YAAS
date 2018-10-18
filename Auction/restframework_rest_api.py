@@ -75,7 +75,7 @@ def exec_bid(id, version, price, bidder):
         raise AuctionWinnerException()
     if auction.bid_version != version:
         raise UpdatedAuctionException()
-    if(auction.price > price):
+    if(auction.price >= price):
         raise PriceException()
     auction.price = price
     auction.bid_version = auction.bid_version + 1
