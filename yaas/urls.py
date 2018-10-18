@@ -41,4 +41,6 @@ urlpatterns = [
 
     path('api/bid/<int:id>', api_bid, name="api_bid"),
     path('bid/<int:id>', bid, name="bid"),
+
+    path('language/<slug:lang_code>/', change_language, name="language"),
 ]

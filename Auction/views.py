@@ -8,6 +8,7 @@ from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
 from decimal import Decimal
+from django.utils.translation import gettext as _
 
 from . import forms, models
 from .restframework_rest_api import *
@@ -36,7 +37,7 @@ class AuctionEditView(View):
     def get(self, request, id):
         auction = get_auctionView(id)
         if auction.seller != request.user:
-            messages.error(request, "You can only edit your own auctions !")
+            messages.error(request, _("You can only edit your own auctions !"))
             return redirect("auctionsBrowse")
         form = forms.AuctionEditForm(instance=auction)
         return render(request, 'auctionEdit.html', {'form': form, 'title': auction.title, 'id': auction.id})
@@ -47,14 +48,14 @@ class AuctionEditView(View):
         if form.is_valid():
             auction = get_auctionView(id)
             if auction.seller != request.user:
-                messages.error(request, "You can only edit your own auctions !")
+                messages.error(request, _("You can only edit your own auctions !"))
                 return redirect("auctionsBrowse")
             auction.description = form.cleaned_data.get("description")
             auction.save()
-            messages.success(request, "Your auction has been updated !")
+            messages.success(request, _("Your auction has been updated !"))
             return redirect("auctionsBrowse")
         else:
-            messages.error(request, "Error during auction editing !")
+            messages.error(request, _("Error during auction editing !"))
             return render(request, 'auctionEdit.html', {'form': form, 'title': auction.title, 'id': auction.id})
 
 @login_required
@@ -67,7 +68,7 @@ def auctionConfirm(request):
                         deadline=form.cleaned_data.get("deadline"), 
                         seller=request.user)
         a.save()
-        messages.success(request, "Your auction has been created !")
+        messages.success(request, _("Your auction has been created !"))
         return redirect("auctionsBrowse")
     else:
         return HttpResponse("error")
@@ -94,7 +95,7 @@ def bid(request, id):
     if form.is_valid():
         try:
             exec_bid(id, form.cleaned_data.get("version", 0), form.cleaned_data.get("price", 0), request.user)
-            messages.success(request, "Your bid has been placed !")
+            messages.success(request, _("Your bid has been placed !"))
             return redirect("auctionView", id)
         except UpdatedAuctionException as e:
             messages.error(request, e.message)
@@ -110,6 +111,6 @@ def bid(request, id):
             return render(request, "seeAuction.html", {"auction": auction, 'form': form})
             
     else:
-        messages.error(request, "Error during form validation. ")
+        messages.error(request, _("Error during form validation. "))
         return render(request, "seeAuction.html", {"auction": auction, 'form': form})
         

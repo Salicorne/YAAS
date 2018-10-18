@@ -8,10 +8,16 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
-
+from django.utils import translation
 from . import forms
 
 # Create your views here.
+
+def change_language(request, lang_code):
+    translation.activate(lang_code)
+    request.session[translation.LANGUAGE_SESSION_KEY] = lang_code
+    messages.add_message(request, messages.INFO, "Language changed to " + lang_code)
+    return HttpResponseRedirect(reverse("main"))
 
 class RegisterView(View):
     def get(self, request):
