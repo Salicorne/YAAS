@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+        <h1>
+            Banned auctions
+        </h1>
+
+        <div class="row">
+        {% for a in auctions %}
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="{% url 'auctionView' id=a.id %}"><h5 class="card-title">{{ a.title }}</h5></a>
+                        <p class="card-text">{{ a.description }}</p>
+                    </div>
+                </div>
+            </div>
+
+        {% if forloop.counter|divisibleby:3 %}
+        </div><br /><div class="row">
+        {% endif %}
+        {% empty %}
+            <em>There are no banned auctions yet. </em>
+        {% endfor %}
+        </div>
+{% endblock %}

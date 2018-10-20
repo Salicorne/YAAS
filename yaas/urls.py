@@ -40,6 +40,7 @@ urlpatterns = [
     path('api/auctions/search', api_auctionsSearch, name="api_auctionSearch"),
     path('auctions/search', auctionsSearch, name="auctionSearch"),
     path('auctions/ban/<int:id>', auctionBan, name="auctionBan"),
+    path('auctions/banned', viewBannedAuctions, name="bannedAuctions"),
 
     path('api/bid/<int:id>', api_bid, name="api_bid"),
     path('bid/<int:id>', bid, name="bid"),

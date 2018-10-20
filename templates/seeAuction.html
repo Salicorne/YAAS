@@ -11,31 +11,36 @@
             <div class="card-body"><p class="card-text">{{ auction.description }}</p></div>
             <div class="card-footer text-center"><p class="card-text">Current price : {{ auction.price }} €</p></div>
         </div><br />
-        <p>Time left : {{ auction.getTimeLeft }}</p><br />
+        {% if not auction.banned %}
+        
+            <p>Time left : {{ auction.getTimeLeft }}</p><br />
 
-        {% if user.is_authenticated %}
-        {% if form.errors %}
-            {% for field in form %}
-                {% for error in field.errors %}
+            {% if user.is_authenticated %}
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
                     <div class="alert alert-danger">
                         <strong>{{ error|escape }}</strong>
                     </div>
                 {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-                <div class="alert alert-danger">
-                    <strong>{{ error|escape }}</strong>
-                </div>
-            {% endfor %}
-        {% endif %}
+            {% endif %}
 
-        <form class="form-inline" method="POST" action="{% url 'bid' auction.id %}">
-            {% csrf_token %}
-            {{ form|crispy }} 
-            <div class="sep"></div>
-            <input type="submit" class="btn btn-primary" value="Bid !" />
-        </form><br />
-        {% endif %}
+            <form class="form-inline" method="POST" action="{% url 'bid' auction.id %}">
+                {% csrf_token %}
+                {{ form|crispy }} 
+                <div class="sep"></div>
+                <input type="submit" class="btn btn-primary" value="Bid !" />
+            </form><br />
+            {% endif %}
 
-        <a href="{% url 'auctionsBrowse' %}">Back to auctions list</a>
+            <a href="{% url 'auctionsBrowse' %}">Back to auctions list</a>
+        {% else %}
+            <em>This auction has been banned. </em>
+        {% endif %}
 {% endblock %}

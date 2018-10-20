@@ -129,4 +129,10 @@ def auctionBan(request, id):
         auction.save()
         return redirect('auctionsBrowse')
 
+@login_required
+def viewBannedAuctions(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("You must be an admin to view the list of banned auctions !")
+    else:
+        return render(request, "bannedAuctions.html", {"auctions": Auction.objects.filter(banned=True)})
         
