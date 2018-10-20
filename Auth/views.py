@@ -13,12 +13,6 @@ from . import forms
 
 # Create your views here.
 
-def change_language(request, lang_code):
-    translation.activate(lang_code)
-    request.session[translation.LANGUAGE_SESSION_KEY] = lang_code
-    messages.add_message(request, messages.INFO, "Language changed to " + lang_code)
-    return HttpResponseRedirect(reverse("main"))
-
 class RegisterView(View):
     def get(self, request):
         form = forms.RegisterForm()

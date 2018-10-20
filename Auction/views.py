@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
-from django.core.mail import send_mail
+from Utils.views import my_send_mail
 from django.views import View
 from decimal import Decimal
 
@@ -70,7 +70,7 @@ def auctionConfirm(request):
                         seller=request.user)
         a.save()
         messages.success(request, _("Your auction has been created !"))
-        send_mail("YAAS Auction created !", f'Your auction {a.title} has been created for {a.price} euros. Its due date is {a.deadline}. ', "yaas@localhost", [request.user.email])
+        my_send_mail("YAAS Auction created !", f'Your auction {a.title} has been created for {a.price} euros. Its due date is {a.deadline}. ', [request.user.email])
         return redirect("auctionsBrowse")
     else:
         return HttpResponse("error")

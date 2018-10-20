@@ -7,7 +7,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.exceptions import APIException
 
 from django.shortcuts import get_object_or_404
-from django.core.mail import send_mail
+from Utils.views import my_send_mail
 
 from .serializers import AuctionSerializer, BidSerializer
 from .models import Auction
@@ -80,11 +80,11 @@ def exec_bid(id, version, price, bidder):
         raise PriceException()
     auction.price = price
     auction.bid_version = auction.bid_version + 1
-    send_mail("Someone else placed a bid on an auction", f'Hi ! Your bid on auction {auction.title} is no longer valid, because someone placed a higher bid on it.', "yaas@localhost", [auction.last_bidder.email])
+    my_send_mail("Someone else placed a bid on an auction", f'Hi ! Your bid on auction {auction.title} is no longer valid, because someone placed a higher bid on it.', [auction.last_bidder.email])
     auction.last_bidder = bidder
     auction.bidders.add(bidder)
     auction.save()
-    send_mail("A new bid has been placed on your auction", f'A new bid has been placed on your auction {auction.title} by {bidder.username}. The new price of your auction is now {auction.price} euros. ', "yaas@localhost", [auction.seller.email])
+    my_send_mail("A new bid has been placed on your auction", f'A new bid has been placed on your auction {auction.title} by {bidder.username}. The new price of your auction is now {auction.price} euros. ', [auction.seller.email])
     return auction
 
 @api_view(['POST'])
