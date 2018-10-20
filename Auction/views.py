@@ -3,7 +3,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
@@ -108,6 +108,9 @@ def bid(request, id):
         except OwnAuctionException as e:
             messages.error(request, e.detail)
             return render(request, "seeAuction.html", {"auction": auction, 'form': form})
+        except BannedAuctionException as e:
+            messages.error(request, e.detail)
+            return render(request, "seeAuction.html", {"auction": auction, 'form': form})
         except AuctionWinnerException as e:
             messages.error(request, e.detail)
             return render(request, "seeAuction.html", {"auction": auction, 'form': form})
@@ -115,4 +118,15 @@ def bid(request, id):
     else:
         messages.error(request, _("Error during form validation. "))
         return render(request, "seeAuction.html", {"auction": auction, 'form': form})
+
+@login_required
+def auctionBan(request, id):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("You must be an admin to ban an auction !")
+    else:
+        auction = get_auctionView(id)
+        auction.banned = True
+        auction.save()
+        return redirect('auctionsBrowse')
+
         

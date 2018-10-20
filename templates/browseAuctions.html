@@ -21,6 +21,9 @@
                         {% if a.seller == user %}
                         <a href="{% url 'auctionEdit' a.id %}" class="btn btn-warning">Edit this auction</a>
                         {% endif %}
+                        {% if request.user.is_superuser %}
+                        &nbsp;<a href="{% url 'auctionBan' a.id %}" class="btn btn-danger">Ban this auction</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

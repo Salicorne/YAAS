@@ -28,6 +28,11 @@ class AuctionWinnerException(APIException):
     default_detail = "You are already the winner of this auction"
     default_code = "Forbidden"
 
+class BannedAuctionException(APIException):
+    status_code = 403
+    default_detail = "You can not bid on a banned auction"
+    default_code = "Forbidden"
+
 class UpdatedAuctionException(Exception):
     def __init__(self):
         self.message = "This auction has been updated before your request !"
@@ -35,7 +40,7 @@ class UpdatedAuctionException(Exception):
 
 
 def get_auctionsBrowse():
-    return Auction.objects.all()
+    return Auction.objects.filter(banned=False)
 
 @api_view(['GET'])
 @renderer_classes([JSONRenderer,])
@@ -57,7 +62,7 @@ def api_auctionView(request, id):
 
 
 def get_auctionsSearch(search):
-    return Auction.objects.filter(title__icontains=search)
+    return Auction.objects.filter(title__icontains=search, banned=False)
 
 @api_view(['GET'])
 @renderer_classes([JSONRenderer,])
@@ -76,11 +81,13 @@ def exec_bid(id, version, price, bidder):
         raise AuctionWinnerException()
     if auction.bid_version != version:
         raise UpdatedAuctionException()
+    if auction.banned:
+        raise BannedAuctionException()
     if(auction.price >= price):
         raise PriceException()
     auction.price = price
     auction.bid_version = auction.bid_version + 1
-    if auction.last_bidder != None:
+    if auction.last_bidder is not None:
         my_send_mail("Someone else placed a bid on an auction", f'Hi ! Your bid on auction {auction.title} is no longer valid, because someone placed a higher bid on it.', [auction.last_bidder.email])
     auction.last_bidder = bidder
     auction.bidders.add(bidder)

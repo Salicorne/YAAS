@@ -14,6 +14,7 @@ class Auction(models.Model):
     price = models.DecimalField(max_digits=6, decimal_places=2)
     deadline = models.DateTimeField()
     bid_version = models.IntegerField(default=0)
+    banned = models.BooleanField(default=False)
 
     def getTimeLeft(self):
         diff = self.deadline.replace(tzinfo=None) - datetime.datetime.now().replace(tzinfo=None)
