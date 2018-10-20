@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.utils import translation
 from django.core.mail import send_mail
+from .models import Email
 
 def change_language(request, lang_code):
     translation.activate(lang_code)
@@ -19,3 +20,5 @@ def change_language(request, lang_code):
 
 def my_send_mail(subject, content, to):
     send_mail(subject, content, "yaas@localhost", to)
+    mail = Email.objects.create(subject=subject, content=content, to=to)
+    mail.save()

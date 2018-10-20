@@ -80,7 +80,8 @@ def exec_bid(id, version, price, bidder):
         raise PriceException()
     auction.price = price
     auction.bid_version = auction.bid_version + 1
-    my_send_mail("Someone else placed a bid on an auction", f'Hi ! Your bid on auction {auction.title} is no longer valid, because someone placed a higher bid on it.', [auction.last_bidder.email])
+    if auction.last_bidder != None:
+        my_send_mail("Someone else placed a bid on an auction", f'Hi ! Your bid on auction {auction.title} is no longer valid, because someone placed a higher bid on it.', [auction.last_bidder.email])
     auction.last_bidder = bidder
     auction.bidders.add(bidder)
     auction.save()
