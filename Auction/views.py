@@ -127,6 +127,8 @@ def auctionBan(request, id):
         auction = get_auctionView(id)
         auction.banned = True
         auction.save()
+        my_send_mail("Auction banned", f'Your auction {auction.title} has been banned by an administrator, it will not appear in the system anymore. ', [auction.seller.email])
+        my_send_mail("Auction banned", f'The auction {auction.title} on which you had a bid has been banned by an administrator. It will no longer appear in the system. ', list(map(lambda u: u.email, auction.bidders.all())))
         return redirect('auctionsBrowse')
 
 @login_required
