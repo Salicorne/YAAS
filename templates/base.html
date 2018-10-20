@@ -26,6 +26,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'auctionCreate' %}">{% trans "Create auction" %}</a>
                 </li>
+                {% if request.user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'emailsHistory' %}">{% trans "Emails history" %}</a>
+                </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">

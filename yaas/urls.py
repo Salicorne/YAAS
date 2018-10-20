@@ -44,4 +44,5 @@ urlpatterns = [
     path('bid/<int:id>', bid, name="bid"),
 
     path('language/<slug:lang_code>/', change_language, name="language"),
+    path('emailsHistory', viewEmailsHistory, name="emailsHistory"),
 ]

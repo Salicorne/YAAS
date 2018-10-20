@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+        <h1>Emails list</h1>
+        
+        {% for e in emails %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ e.subject }}</h5>
+                <h6 class="card-subtitle text-muted">Sent on {{e.time}} to {{e.to}}</h6>
+                <p class="card-test">{{ e.content }}</p>
+            </div>
+        </div><br />
+        {% empty %}
+        <p>No email has been sent yet. </p>
+        {% endfor %}
+{% endblock %}
