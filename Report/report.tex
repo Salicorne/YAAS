@@ -22,9 +22,9 @@
         \item UC4: edit auction description
         \item UC6: bid
         \item UC5: Browse \& Search
-        %\item UC7: ban auction
-        %\item UC8: resolve auction
-        %\item UC9: language switching
+        \item UC7: ban auction
+        \item UC8: resolve auction
+        \item UC9: language switching
         \item UC10: concurrency
         %\item UC11: currency exchange
         \item WS1: Browse \& Search API
@@ -57,10 +57,20 @@
     UC3 states that the user should be asked for a confirmation before creating a new auction. I implemented it using the rendering of a confirmation form, containing all auction informations in hidden field. The first auction creation form is validated server-side : if all informations are correct, the confirmation form is shown with these informations. Only when this confirmation form is submited the new auction is created and saved in database : thus if the user cancels the process or never submits the form the auction is not saved. This behaviour is described in the file \texttt{Auction/views.py}, in the functions \texttt{AuctionEditView::get}, \texttt{AuctionEditView::post} and \texttt{auctionConfirm}. 
 
     \section{Automatic bid resolution}
+
+    For the bids resolution, the problematic is to allow resolution without any web request being made. We can't use classic Django views, and need to find another method. To begin I had a look at the Django module \texttt{django\_cron} but all it does is exposing a django command allowing to run jobs through \texttt{manage.py}, but still relies on an external tool (such as Unix crontab) to run this command. The module \texttt{django-extensions} has a jobs scheduling system, but it does not run jobs automatically either. I ended up manually launching a new thread, that will check all active (ie not banned and not resolved) auctions every minute and resolve them if needed. 
         
     \section{Concurrency management}
 
     \section{REST API}
+
+    The REST API is implemented using the \textit{Django REST Framework}. It follows main REST principles : it relies on HTTP verbs (GET, POST), and is \textit{stateless} : there is no state kept on the server, and each request is independant. The code is shared between the regular web app and the API : for a single action there is a function for the actual action, and two other englobing functions used to call this main function from the regular views and from the API. The naming convention is as follows :
+
+    \begin{itemize}
+        \item \texttt{get\_function} : The actual code logic
+        \item \texttt{api\_function} : Used to call the function from the API
+        \item \texttt{function} : Used to call the function from the web app.
+    \end{itemize}
 
     \section{Functional tests}
 

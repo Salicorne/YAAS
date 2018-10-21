@@ -28,3 +28,4 @@ def viewEmailsHistory(request):
         return HttpResponseForbidden("You must be an admin to view emails history !")
     else:
         return render(request, "emailsHistory.html", {"emails": Email.objects.all().order_by('-time')})
+

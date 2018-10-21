@@ -33,6 +33,11 @@ class BannedAuctionException(APIException):
     default_detail = "You can not bid on a banned auction"
     default_code = "Forbidden"
 
+class ResolvedAuctionException(APIException):
+    status_code = 403
+    default_detail = "You can not bid on a resolved auction"
+    default_code = "Forbidden"
+
 class UpdatedAuctionException(Exception):
     def __init__(self):
         self.message = "This auction has been updated before your request !"
@@ -40,7 +45,7 @@ class UpdatedAuctionException(Exception):
 
 
 def get_auctionsBrowse():
-    return Auction.objects.filter(banned=False)
+    return Auction.objects.filter(banned=False, resolved=False)
 
 @api_view(['GET'])
 @renderer_classes([JSONRenderer,])
@@ -62,7 +67,7 @@ def api_auctionView(request, id):
 
 
 def get_auctionsSearch(search):
-    return Auction.objects.filter(title__icontains=search, banned=False)
+    return Auction.objects.filter(title__icontains=search, banned=False, resolved=False)
 
 @api_view(['GET'])
 @renderer_classes([JSONRenderer,])
@@ -82,6 +87,8 @@ def exec_bid(id, version, price, bidder):
     if auction.bid_version != version:
         raise UpdatedAuctionException()
     if auction.banned:
+        raise BannedAuctionException()
+    if auction.resolved:
         raise BannedAuctionException()
     if(auction.price >= price):
         raise PriceException()

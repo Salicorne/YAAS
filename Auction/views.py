@@ -1,15 +1,20 @@
 import json
+import time
+import datetime
+from decimal import Decimal
+from threading import Thread
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.http import (HttpResponse, HttpResponseForbidden,
+                         HttpResponseRedirect)
 from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
-from Utils.views import my_send_mail
 from django.views import View
-from decimal import Decimal
+
+from Utils.views import my_send_mail
 
 from . import forms, models
 from .restframework_rest_api import *
@@ -138,3 +143,14 @@ def viewBannedAuctions(request):
     else:
         return render(request, "bannedAuctions.html", {"auctions": Auction.objects.filter(banned=True)})
         
+class AutionsResolution(Thread):
+    def __init__(self):
+        Thread.__init__(self)
+        self.daemon = True      # Allows to be non-blocking, eg for makemigrations etc. 
+
+    def run(self):
+        while(True):
+            print(f' --- Checking at {datetime.datetime.now()} ---')
+            for a in Auction.objects.filter(resolved=False, banned=False):
+                a.testResolve()
+            time.sleep(5)
