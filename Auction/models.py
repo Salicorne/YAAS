@@ -23,7 +23,6 @@ class Auction(models.Model):
         return str(diff)
 
     def testResolve(self):
-        print(f' -- Trying {self.title}')
         if datetime.datetime.now().replace(tzinfo=None) > self.deadline.replace(tzinfo=None) and not self.resolved and not self.banned:
             print(f'Resolving auction {self.title} !')
             self.resolved = True

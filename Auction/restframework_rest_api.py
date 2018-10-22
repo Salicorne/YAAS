@@ -40,7 +40,7 @@ class ResolvedAuctionException(APIException):
 
 class UpdatedAuctionException(Exception):
     def __init__(self):
-        self.message = "This auction has been updated before your request !"
+        self.message = "This auction has been updated before your request, please refresh !"
 
 
 

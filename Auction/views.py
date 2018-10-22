@@ -57,6 +57,7 @@ class AuctionEditView(View):
                 messages.error(request, _("You can only edit your own auctions !"))
                 return redirect("auctionsBrowse")
             auction.description = form.cleaned_data.get("description")
+            auction.bid_version += 1
             auction.save()
             messages.success(request, _("Your auction has been updated !"))
             return redirect("auctionsBrowse")
@@ -150,7 +151,6 @@ class AutionsResolution(Thread):
 
     def run(self):
         while(True):
-            print(f' --- Checking at {datetime.datetime.now()} ---')
             for a in Auction.objects.filter(resolved=False, banned=False):
                 a.testResolve()
             time.sleep(5)
