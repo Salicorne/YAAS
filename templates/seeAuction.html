@@ -7,7 +7,7 @@
         <h1>{{ auction.title }}</h1>
 
         <div class="card bg-light">
-            <div class="card-header text-center">{{ auction.title }}</div>
+            <div class="card-header text-center">{{ auction.title }} (Sold by {{ auction.seller.username }})</div>
             <div class="card-body"><p class="card-text">{{ auction.description }}</p></div>
             <div class="card-footer text-center"><p class="card-text">Current price : {{ auction.price }} €</p></div>
         </div><br />
