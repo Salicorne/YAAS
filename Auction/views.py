@@ -53,8 +53,8 @@ class AuctionEditView(View):
     @method_decorator(login_required)
     def post(self, request, id):
         form = forms.AuctionEditForm(request.POST)
+        auction = get_auctionView(id)
         if form.is_valid():
-            auction = get_auctionView(id)
             if auction.seller != request.user:
                 messages.error(request, _("You can only edit your own auctions !"))
                 return redirect("auctionsBrowse")
