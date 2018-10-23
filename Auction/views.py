@@ -2,6 +2,7 @@ import json
 import time
 import datetime
 import random
+import requests
 from decimal import Decimal
 from threading import Thread
 
@@ -87,10 +88,36 @@ def auctionsBrowse(request):
     auctions = get_auctionsBrowse()
     return render(request, "browseAuctions.html", {"auctions": auctions})
 
+def getRate(cur):
+    key = "37c17a3674def739416f5e9a653a166a"
+    if cur == "EUR":
+        return 1
+    r = requests.get(f'http://data.fixer.io/api/latest?access_key={key}&base=EUR')
+    if r.status_code != 200:
+        return 1
+    res = r.json()
+    try:
+        return res.get("rates", None).get(cur, 1)
+    except Exception:
+        return 1
+
+def getSymbol(cur):
+    table = {
+        "EUR": "&euro;",
+        "USD": "&dollar;",
+        "GBP": "&pound;",
+        "JPY": "&yen;",
+        "RUB": "&#8381;",
+    }
+    return table.get(cur, '&euro;')
+
 def auctionView(request, id):
     auction = get_auctionView(id)
     form = forms.BidForm(data={'price': auction.price+Decimal(0.01), 'version': auction.bid_version})
-    return render(request, "seeAuction.html", {"auction": auction, 'form': form})
+    cur = request.GET.get('cur', 'EUR')
+    auction.price = '%.2f' % (auction.price * Decimal(getRate(cur)))
+    symbol = getSymbol(cur)
+    return render(request, "seeAuction.html", {"auction": auction, 'symbol': symbol, 'form': form})
 
 def auctionsSearch(request):
     search = request.GET.get('q', '')

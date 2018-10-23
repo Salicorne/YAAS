@@ -9,8 +9,17 @@
         <div class="card bg-light">
             <div class="card-header text-center">{{ auction.title }} (Sold by {{ auction.seller.username }})</div>
             <div class="card-body"><p class="card-text">{{ auction.description }}</p></div>
-            <div class="card-footer text-center"><p class="card-text">Current price : {{ auction.price }} €</p></div>
+            <div class="card-footer text-center"><p class="card-text">Current price : {{ auction.price }} {{ symbol|safe }}</p></div>
         </div><br />
+        View price in : 
+        <span class="btn-group" role="group" aria-label="Currency">
+            <a href="?cur=EUR" class="btn btn-secondary">&euro;</a>
+            <a href="?cur=USD" class="btn btn-secondary">&dollar;</a>
+            <a href="?cur=GBP" class="btn btn-secondary">&pound;</a>
+            <a href="?cur=JPY" class="btn btn-secondary">&yen;</a>
+            <a href="?cur=RUB" class="btn btn-secondary">&#8381;</a>
+        </span><br /><br />
+
         {% if not auction.banned %}
         
             <p>Time left : {{ auction.getTimeLeft }}</p><br />
