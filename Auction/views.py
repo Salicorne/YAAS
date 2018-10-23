@@ -1,11 +1,13 @@
 import json
 import time
 import datetime
+import random
 from decimal import Decimal
 from threading import Thread
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core import serializers
 from django.http import (HttpResponse, HttpResponseForbidden,
                          HttpResponseRedirect)
@@ -154,3 +156,51 @@ class AutionsResolution(Thread):
             for a in Auction.objects.filter(resolved=False, banned=False):
                 a.testResolve()
             time.sleep(5)
+
+
+# Data generation program :
+
+def getRandomUser(sampleSize):
+    return User.objects.all()[random.randint(0, sampleSize - 1)]
+
+def getRandomAuction(sampleSize):
+    return Auction.objects.all()[random.randint(0, sampleSize - 1)]
+
+def createAuction(sampleSize):
+    u = getRandomUser(sampleSize)
+    Auction.models.Auction(seller=u,
+            title=f'Sample auction created by {u.username}',
+            description=f'This is a sample random auction. It has been created via GET /generatedata !',
+            price=random.randint(10, 100),
+            deadline=datetime.datetime.now() + datetime.timedelta(days=random.randint(4, 10)) ).save()
+
+def createBid(sampleSize):
+    a = getRandomAuction(sampleSize)
+    u = getRandomUser(sampleSize)
+    Auction.restframework_rest_api.exec_bid(id=a.id,
+                                        version=a.bid_version,
+                                        price=a.price + 1,
+                                        bidder=u)
+
+def generateData(request):
+    Auction.models.Auction.objects.all().delete()
+    User.objects.all().delete()
+
+    User.objects.create_superuser(username="admin", password="admin2018", email="admin@localhost")
+    User.objects.create_user(username="user", password="user", email="user@localhost")
+
+    sampleSize = 51
+    for i in range(0, sampleSize):
+        User.objects.create_user(username=f'user{i}', password=f'user{i}', email=f'user{i}@localhost')
+
+    for i in range(0, sampleSize):
+        createAuction(sampleSize)
+
+    for i in range(0, sampleSize * 3):
+        try:
+            createBid(sampleSize)
+        except Exception:
+            pass
+
+    messages.success(request, "Sample data has been generated !")
+    return redirect("main")
