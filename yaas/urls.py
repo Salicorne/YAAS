@@ -49,5 +49,3 @@ urlpatterns = [
     path('emailsHistory', viewEmailsHistory, name="emailsHistory"),
     path('generatedata', generateData, name="generateData")
 ]
-
-AutionsResolution().start()

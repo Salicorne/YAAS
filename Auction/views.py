@@ -176,7 +176,8 @@ def viewBannedAuctions(request):
 class AutionsResolution(Thread):
     def __init__(self):
         Thread.__init__(self)
-        self.daemon = True      # Allows to be non-blocking, eg for makemigrations etc. 
+        self.daemon = True      # https://docs.python.org/3/library/threading.html
+        print(" --- Launching auctions resolution thread ---")
 
     def run(self):
         while(True):
