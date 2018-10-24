@@ -183,7 +183,7 @@ class AutionsResolution(Thread):
         while(True):
             for a in Auction.objects.filter(resolved=False, banned=False):
                 a.testResolve()
-            time.sleep(5)
+            time.sleep(60)
 
 
 # Data generation program :
