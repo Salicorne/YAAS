@@ -47,6 +47,7 @@ urlpatterns = [
 
     path('language/<slug:lang_code>/', change_language, name="language"),
     path('emailsHistory', viewEmailsHistory, name="emailsHistory"),
+    path('generatedata', generateData, name="generateData")
 ]
 
 AutionsResolution().start()

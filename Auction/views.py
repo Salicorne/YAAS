@@ -195,7 +195,7 @@ def getRandomAuction(sampleSize):
 
 def createAuction(sampleSize):
     u = getRandomUser(sampleSize)
-    Auction.models.Auction(seller=u,
+    Auction(seller=u,
             title=f'Sample auction created by {u.username}',
             description=f'This is a sample random auction. It has been created via GET /generatedata !',
             price=random.randint(10, 100),
@@ -210,7 +210,7 @@ def createBid(sampleSize):
                                         bidder=u)
 
 def generateData(request):
-    Auction.models.Auction.objects.all().delete()
+    Auction.objects.all().delete()
     User.objects.all().delete()
 
     User.objects.create_superuser(username="admin", password="admin2018", email="admin@localhost")
