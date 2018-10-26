@@ -1,16 +1,20 @@
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view, renderer_classes, authentication_classes, permission_classes
-from rest_framework.authentication import BasicAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
-from rest_framework.exceptions import APIException
+import datetime
 
 from django.shortcuts import get_object_or_404
+from rest_framework.authentication import (BasicAuthentication,
+                                           TokenAuthentication)
+from rest_framework.decorators import (api_view, authentication_classes,
+                                       permission_classes, renderer_classes)
+from rest_framework.exceptions import APIException
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from Utils.views import my_send_mail
 
-from .serializers import AuctionSerializer, BidSerializer
 from .models import Auction
+from .serializers import AuctionSerializer, BidSerializer
 
 
 class OwnAuctionException(APIException):
@@ -80,6 +84,7 @@ def api_auctionsSearch(request):
 
 def exec_bid(id, version, price, bidder):
     auction = get_object_or_404(Auction, id=id)
+    # Bid validity verification
     if auction.seller == bidder:
         raise OwnAuctionException()
     if auction.last_bidder == bidder:
@@ -92,12 +97,16 @@ def exec_bid(id, version, price, bidder):
         raise BannedAuctionException()
     if(auction.price >= price):
         raise PriceException()
+    # Bid registration
     auction.price = price
     auction.bid_version = auction.bid_version + 1
     if auction.last_bidder is not None:
         my_send_mail("Someone else placed a bid on an auction", f'Hi ! Your bid on auction {auction.title} is no longer valid, because someone placed a higher bid on it.', [auction.last_bidder.email])
     auction.last_bidder = bidder
     auction.bidders.add(bidder)
+    # Soft deadlines
+    if(auction.deadline.replace(tzinfo=None) - datetime.datetime.now().replace(tzinfo=None) < datetime.timedelta(minutes=5)):
+        auction.deadline += datetime.timedelta(minutes=5)
     auction.save()
     my_send_mail("A new bid has been placed on your auction", f'A new bid has been placed on your auction {auction.title} by {bidder.username}. The new price of your auction is now {auction.price} euros. ', [auction.seller.email])
     return auction
@@ -116,5 +125,3 @@ def api_bid(request, id):
 
         out_serializer = AuctionSerializer(auction, many=False)
         return Response(out_serializer.data)
-
-
