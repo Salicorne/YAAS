@@ -33,6 +33,9 @@ class AuctionCreateView(View):
     def post(self, request):
         form = forms.AuctionCreateForm(request.POST)
         if form.is_valid():
+            if form.cleaned_data.get("deadline").replace(tzinfo=None) - datetime.datetime.now().replace(tzinfo=None) < datetime.timedelta(hours=72):
+                messages.error(request, "The minimum duration of an auction is 72h")
+                return render(request, 'auctionCreate.html', {'form': form})
             confForm = forms.ConfAuctionForm(initial={"title": form.cleaned_data.get("title"), 
                                                     "description": form.cleaned_data.get("description"), 
                                                     "price": form.cleaned_data.get("price"), 
@@ -72,6 +75,10 @@ class AuctionEditView(View):
 def auctionConfirm(request):
     form = forms.ConfAuctionForm(request.POST)
     if(form.is_valid()):
+        if form.cleaned_data.get("deadline").replace(tzinfo=None) - datetime.datetime.now().replace(tzinfo=None) < datetime.timedelta(hours=72):
+            messages.error(request, "The minimum duration of an auction is 72h")
+            form = forms.AuctionCreateForm()
+            return render(request, 'auctionCreate.html', {'form': form})
         a = models.Auction(title=form.cleaned_data.get("title"), 
                         description=form.cleaned_data.get("description"), 
                         price=form.cleaned_data.get("price"), 
@@ -200,7 +207,8 @@ def createAuction(sampleSize):
             title=f'Sample auction created by {u.username}',
             description=f'This is a sample random auction. It has been created via GET /generatedata !',
             price=random.randint(10, 100),
-            deadline=datetime.datetime.now() + datetime.timedelta(days=random.randint(4, 10)) ).save()
+            # This deadline respects the 72h limit, but can be changed to create shorter auctions. 
+            deadline=datetime.datetime.now() + datetime.timedelta(days=random.randint(4, 10))).save()
 
 def createBid(sampleSize):
     a = getRandomAuction(sampleSize)
