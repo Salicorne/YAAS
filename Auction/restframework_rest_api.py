@@ -94,7 +94,7 @@ def exec_bid(id, version, price, bidder):
     if auction.banned:
         raise BannedAuctionException()
     if auction.resolved:
-        raise BannedAuctionException()
+        raise ResolvedAuctionException()
     if(auction.price >= price):
         raise PriceException()
     # Bid registration
