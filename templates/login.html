@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block body %}
 
@@ -11,5 +12,5 @@
             {{ form|crispy }}
             <button type="submit" class="btn btn-primary">Login</button>
         </form><br />
-        <p>No account yet ? <a href="{% url 'register' %}">Create a new one !</a></p>
+        <p>{% trans "No account yet ?" %}<a href="{% url 'register' %}">{% trans "Create a new one !" %}</a></p>
 {% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-18 11:31+0000\n"
+"POT-Creation-Date: 2018-10-28 13:17+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,27 +18,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: Auction/views.py:40 Auction/views.py:51
+#: Auction/views.py:52 Auction/views.py:63
 msgid "You can only edit your own auctions !"
 msgstr "Vous ne pouvez éditer que vos propres enchères !"
 
-#: Auction/views.py:55
+#: Auction/views.py:68
 msgid "Your auction has been updated !"
 msgstr "Votre enchère a été mise à jour. "
 
-#: Auction/views.py:58
+#: Auction/views.py:71
 msgid "Error during auction editing !"
 msgstr "Erreur durant l'édition de l'enchère. "
 
-#: Auction/views.py:71
+#: Auction/views.py:88
 msgid "Your auction has been created !"
 msgstr "Votre enchère a été créée !"
 
-#: Auction/views.py:98
+#: Auction/views.py:142
 msgid "Your bid has been placed !"
 msgstr "Votre mise a été placée. "
 
-#: Auction/views.py:114
+#: Auction/views.py:161
 msgid "Error during form validation. "
 msgstr "Erreur lors de la validation du formulaire. "
 
@@ -49,3 +49,35 @@ msgstr "Enchères"
 #: templates/base.html:27
 msgid "Create auction"
 msgstr "Créer une enchère"
+
+#: templates/base.html:31
+msgid "Emails history"
+msgstr "Historique des emails"
+
+#: templates/base.html:34
+msgid "Banned auctions"
+msgstr "Enchères bannies"
+
+#: templates/login.html:14
+msgid "No account yet ?"
+msgstr "Pas encore de compte ?"
+
+#: templates/login.html:14
+msgid "Create a new one !"
+msgstr "Créez-en un !"
+
+#: templates/register.html:7
+msgid "Registration"
+msgstr "Inscription"
+
+#: templates/register.html:27
+msgid "Register"
+msgstr "Inscription"
+
+#: templates/register.html:29
+msgid "Already have an account ?"
+msgstr "Vous avez déjà un compte ?"
+
+#: templates/register.html:29
+msgid "Sign in !"
+msgstr "Connectez-vous !"

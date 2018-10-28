@@ -40,11 +40,11 @@
     \section{Packages used}
     This YAAS application relies on the following packages :
     \begin{itemize}
-        \item Django (2.1.1)
+        \item django (2.1.1)
         \item django-crispy-forms (1.7.2)
         \item django-filter (2.0.0) 
         \item djangorestframework (3.8.2)
-        \item Markdown (3.0.1)
+        \item markdown (3.0.1)
         \item requests (2.20.0)
         
     \end{itemize}
@@ -84,6 +84,10 @@
     Functional tests have been created using the Django test module. Tests are written for UC3 (auction creation), UC6 (bid) and UC10 (concurrency), as well as some basic API calls (browse and get). These tests use both the regular web views and the REST API. 13 tests have been implemented, covering auction creation behaviour for registered and anonymous users, bidding process and its various constraints using both the API and the regular web views, and a full concurrency scenario. 
 
     \section{Language switching management}
+
+    Language switching is handled at the session level, in the view \texttt{Utils::change\_language}. The requirement \textit{OP3: store language preference} has not been implemented, but it could have been easily achieved by subclassing the default django User to add an optional \textit{language} field, and by setting this language when the user logs in. 
+
+    The localization module l10n has been disabled, as it had an impact on the default float delimiter (, in french instead of .) in the decimal fields, but this modification was not reported in the serialization process. 
 
     \section{Data generation}
 

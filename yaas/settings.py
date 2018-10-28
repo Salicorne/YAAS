@@ -120,7 +120,7 @@ USE_L10N = False
 
 USE_TZ = True
 
-LOCALE_PATHS = ("locale",)
+LOCALE_PATHS = (os.path.join(BASE_DIR, "locale"),)
 
 
 # Tell crispy_forms to use bootstrap4 template
