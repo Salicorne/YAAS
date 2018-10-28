@@ -1,6 +1,7 @@
 \documentclass[a4paper, 11pt]{report}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage{listings}
 
 \title{YAAS Project : Report}
 \author{Timothée RABOEUF - 74764}
@@ -11,6 +12,9 @@
 \tableofcontents
     
 \chapter{Introduction}
+
+    This YAAS application is deployed on both \texttt{http://traboeuf.pythonanywhere.com} and \texttt{https://yaas.salicorne.ovh}. The sources are available at \texttt{github.com/Salicorne/YAAS} and 
+    \texttt{github.com/it-teaching-abo-akademi/dt00bt67-server-side-web-services-project-2018-Timothee-Raboeuf}. 
 
     \section{Implemented requirements}
 
@@ -51,8 +55,6 @@
 
 \chapter{Development strategies}
 
-    \section{Session management}
-
     \section{Confirmation form (UC3)}
 
     UC3 states that the user should be asked for a confirmation before creating a new auction. I implemented it using the rendering of a confirmation form, containing all auction informations in hidden field. The first auction creation form is validated server-side : if all informations are correct, the confirmation form is shown with these informations. Only when this confirmation form is submited the new auction is created and saved in database : thus if the user cancels the process or never submits the form the auction is not saved. This behaviour is described in the file \texttt{Auction/views.py}, in the functions \texttt{AuctionEditView::get}, \texttt{AuctionEditView::post} and \texttt{auctionConfirm}. 
@@ -79,6 +81,30 @@
 
     For the endpoints needing authentication, HTTP \textit{Basic authentication}\footnote{https://www.w3.org/Protocols/HTTP/1.0/spec.html\#BasicAA} is used. 
 
+    The following endpoints are available : 
+
+    \begin{itemize}
+        \item \texttt{GET /api/auctions} : to browse all available auctions.
+        \item \texttt{GET /api/auctions/<int:id>} : to view the details of a specific auction.
+        \item \texttt{POST /api/auctions/search?q=param} : to search auctions by title. 
+        \item \texttt{POST /api/bid/<int:id>} : to put a bid on a specific auction. The POST data must be a JSON object including the \texttt{bid\_version} (which can be retrieved uging \texttt{GET /api/auctions/<int:id>}) and the new \texttt{price}. 
+    \end{itemize}
+
+    A concrete example to bid on the auction \#331 for 98 euros with the account user, password user, knowing the current bid\_version for this auction is 3 would be :
+
+    \begin{lstlisting}
+        POST /api/bid/331 HTTP/1.1
+        Host: yaas.salicorne.ovh
+        Authorization: Basic dXNlcjp1c2Vy
+        Content-Type: application/json
+
+        {
+            "version": 3, 
+            "price": 98
+        }
+    \end{lstlisting}
+
+
     \section{Functional tests}
 
     Functional tests have been created using the Django test module. Tests are written for UC3 (auction creation), UC6 (bid) and UC10 (concurrency), as well as some basic API calls (browse and get). These tests use both the regular web views and the REST API. 13 tests have been implemented, covering auction creation behaviour for registered and anonymous users, bidding process and its various constraints using both the API and the regular web views, and a full concurrency scenario. 
@@ -93,5 +119,9 @@
 
     The data generation program can be run using \texttt{GET /generatedata} as a registered or anonymous user. This program erases all bids, auctions and users, and populates the database with 51 users (user/user, user1/user1, user2/user2 etc), 51 auctions and some bids. 
 
+    \section{Deployment}
+
+    This YAAS application has been deployed on pythonanywhere as stated by the requirements, with the domain \texttt{traboeuf.pythonanywhere.com}. However, due to the lack of control of the execution environment and the various limitations of this website the application is also deployed on a production-ready Linux server, with the domain \texttt{yaas.salicorne.ovh}. This deployment is based on two containers : a Gunicorn application, running the Django code, and a nginx server serving static files. both containers are behind a Traefik reverse-proxy, responsible for requests routing and Let's Encrypt certificates management. 
+ 
 
 \end{document}
