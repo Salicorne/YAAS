@@ -125,3 +125,4 @@ def api_bid(request, id):
 
         out_serializer = AuctionSerializer(auction, many=False)
         return Response(out_serializer.data)
+    return Response({'detail': 'Could not parse request'})
