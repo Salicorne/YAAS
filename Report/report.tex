@@ -29,7 +29,7 @@
         \item UC11: currency exchange
         \item WS1: Browse \& Search API
         \item WS2: Bid api
-        %\item OP2: soft deadlines for bidding
+        \item OP2: soft deadlines for bidding
         %\item OP3: store language preference
         %\item OP1: send seller auction link
         \item TR1: data generation program
@@ -59,13 +59,13 @@
 
     \section{Automatic bid resolution}
 
-    For the bids resolution, the problematic is to allow resolution without any web request being made. We can't use classic Django views, and need to find another method. To begin I had a look at the Django module \texttt{django\_cron} but all it does is exposing a django command allowing to run jobs through \texttt{manage.py}, but still relies on an external tool (such as Unix crontab) to run this command. The module \texttt{django-extensions} has a jobs scheduling system, but it does not run jobs automatically either. I ended up manually launching a new thread, that will check all active (ie not banned and not resolved) auctions every minute and resolve them if needed. This thread is flagged as \texttt{daemonic} : \textit{the entire Python program exits when only daemon threads are left. }\footnote{https://docs.python.org/3/library/threading.html} This allows the program to run without worrying about this thread, and commands ran via \texttt{manage.py} to be non-blocking (as this thread will be launched during their execution). 
+    For the bids resolution, the problematic is to allow resolution without any web request being made. We can't use classic Django views, and need to find another method. To begin I had a look at the Django module \texttt{django\_cron} but all it does is exposing a django command allowing to run jobs through \texttt{manage.py}, but still relies on an external tool (such as Unix crontab) to run this command. The module \texttt{django-extensions} has a jobs scheduling system, but it does not run jobs automatically either. I ended up manually launching a new thread, that will check all active (ie not banned and not resolved) auctions every minute and resolve them if needed. This thread is flagged as \texttt{daemonic} : \textit{the entire Python program exits when only daemon threads are left. }\footnote{https://docs.python.org/3/library/threading.html\#threading.Thread.daemon} This allows the program to run without having to manage this thread, and commands ran via \texttt{manage.py} to be non-blocking (as this thread will be launched during their execution). 
 
     This auctions resolution thread is launched in the Auction app initialization. This is achieved thanks to the \texttt{AuctionConfig} class, subclassing \texttt{AppConfig} in Auction/apps.py. This config class is declared in the \_\_init.py\_\_ file of the Auction module. Beware : when using \texttt{python manage.py runserver}, Django starts two processes : one for the development web server and another process to automatically reload the application on code change. The Auction app is loaded in both processes, causing the auctions resolution thread to be launched twice. To avoid this behaviour, the development server should be launched with \texttt{python manage.py runserver --noreload} and manually restarted on any code change. 
 
     \section{Concurrency management}
 
-    This YAAS application relies on optimistic concurrency management : each auction has a \texttt{bid\_version} attribute, and this version is checked when bidding. If the version is not up-to-date, the bidding process will be aborted and the user will be asked to refresh the page so as to see the up-to-date version. An auction version will be outdated when the description is updated, or when a bid is made by another user. It is important to keep in mind that this optimistic concurency will not be 100\% efficient if the application runs on several threads : if two users make a bid at the exact same time, there could be a CPU jump between the processing of the two requests, between the version validation and the actual bidding. We would have to implement a database locking mecanism in that case, but this is not supported by Django for SQLite. 
+    This YAAS application relies on optimistic concurrency management : each auction has a \texttt{bid\_version} attribute, and this version is checked when bidding. If the version is not up-to-date, the bidding process will be aborted and the user will be asked to refresh the page so as to see the up-to-date version. An auction version will be outdated when the description is updated, or when a bid is made by another user. It is important to keep in mind that this optimistic concurrency will not be 100\% efficient if the application runs on several threads : if two users make a bid at the exact same time, there could be a CPU jump between the processing of the two requests, between the version validation and the actual bidding. We would have to implement a database locking mecanism in that case, but this is not supported by Django for SQLite. 
 
     \section{REST API}
 
@@ -77,10 +77,17 @@
         \item \texttt{function} : Used to call the function from the web app.
     \end{itemize}
 
+    For the endpoints needing authentication, HTTP \textit{Basic authentication}\footnote{https://www.w3.org/Protocols/HTTP/1.0/spec.html\#BasicAA} is used. 
+
     \section{Functional tests}
+
+    Functional tests have been created using the Django test module. Tests are written for UC3 (auction creation), UC6 (bid) and UC10 (concurrency), as well as some basic API calls (browse and get). These tests use both the regular web views and the REST API. 13 tests have been implemented, covering auction creation behaviour for registered and anonymous users, bidding process and its various constraints using both the API and the regular web views, and a full concurrency scenario. 
 
     \section{Language switching management}
 
     \section{Data generation}
+
+    The data generation program can be run using \texttt{GET /generatedata} as a registered or anonymous user. This program erases all bids, auctions and users, and populates the database with 51 users (user/user, user1/user1, user2/user2 etc), 51 auctions and some bids. 
+
 
 \end{document}
