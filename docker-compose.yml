@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+
+###########################
+#   yaas.salicorne.ovh    #
+###########################
+
+  yaas:
+    container_name: yaas
+    build: .
+    restart: unless-stopped
+    labels:
+     - "traefik.frontend.rule=Host:yaas.salicorne.ovh"
+     - "traefik.frontend.entrypoint=https"
+     - "traefik.port=8000"
+     - "traefik.backend=yaas"
+     - "traefik.enable=true"
+    networks:
+     - proxy
+
+  yaas-static:
+    container_name: yaas-static
+    image: nginx
+    restart: unless-stopped
+    volumes:
+     - ./static:/usr/share/nginx/html
+    labels:
+     - "traefik.frontend.rule=Host:yaas.salicorne.ovh;PathPrefixStrip:/static/"
+     - "traefik.frontend.entrypoint=https"
+     - "traefik.port=80"
+     - "traefik.backend=yaas-static"
+     - "traefik.enable=true"
+    networks:
+     - proxy
+
+
+networks:
+  default:
+  proxy:
+    external:
+      name: proxy
+
